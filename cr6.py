@@ -1,5 +1,7 @@
 #version 1.5.0a
 
+#Сделано учеником 10Т класса Обуховым Алексеем
+
 from time import sleep
 try:
     import speech_recognition as sr
