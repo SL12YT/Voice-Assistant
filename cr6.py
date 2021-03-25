@@ -2,6 +2,8 @@
 
 #Сделано учеником 10Т класса Обуховым Алексеем
 
+#version 1.5.0a
+
 from time import sleep
 try:
     import speech_recognition as sr
@@ -52,14 +54,20 @@ except:
            Для завершения нажмите Enter')
 def spRecogn():
     with m as source:
+        phEx = False
         try:
             print('Я вас слушаю...')
-            audio = r.listen(source)
-            said = r.recognize_google(audio, language = "ru-RU")
-            said = said.lower()
-            print('Вы сказали: ' + said)
+            try:
+                audio = r.listen(source, timeout=5, phrase_time_limit=7)
+                phEx = True
+            except:
+                phEx = False
+            if phEx:
+                said = r.recognize_google(audio, language = "ru-RU")
+                said = said.lower()
+                print('Вы сказали: ' + said)
             
-            cmdExecute(cmdRecogn(said), said)
+                cmdExecute(cmdRecogn(said), said)
         
         except sr.UnknownValueError:
             print('Не удалось распознать речь...')
@@ -197,7 +205,7 @@ options = {
 }
  
 try:
-    m = sr.Microphone(device_index = 2)
+    m = sr.Microphone(device_index = 1)
     r = sr.Recognizer()
 except:
     print('#Ошибка 7 - Не удалось подключить микрофон. Возможно доступ к нему запрещён. \n\
@@ -205,6 +213,11 @@ except:
            Для завершения нажмите Enter')
     input()
     exit()
+
+with m as source:
+    print('настройка шумоподавления')
+    r.adjust_for_ambient_noise(source)
+
 try:
     engine = pt.init()
 except:
@@ -216,8 +229,7 @@ except:
 
 while True:
     spRecogn()
-    sleep(0.15)	
+    sleep(0.3)	
 
 input()
 
-#©Обухов_Алексей_2021
